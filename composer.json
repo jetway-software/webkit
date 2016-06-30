@@ -1,0 +1,21 @@
+{
+  "name": "eolitich/jw-cms",
+  "minimum-stability": "stable",
+  "require": {
+    "php": ">=7.0",
+    "yiisoft/yii2": "~2.0.0",
+    "yiisoft/yii2-swiftmailer": "*",
+    "yiisoft/yii2-debug": "~2.0.0",
+    "yiisoft/yii2-gii": "~2.0.0",
+    "mobiledetect/mobiledetectlib": "*",
+    "giggsey/libphonenumber-for-php": "~7",
+    "symfony/process": "~2.0",
+    "samdark/sitemap": "*"
+  },
+  "extra": {
+    "asset-installer-paths": {
+      "npm-asset-library": "vendor/npm",
+      "bower-asset-library": "vendor/bower"
+    }
+  }
+}
