@@ -12,7 +12,7 @@ class User extends \yii\web\User
     public function init()
     {
         if ($this->identityClass === null) {
-            if (Yii::$app->hasModule('users')) {
+            if (Yii::$app->hasModule('users') && Yii::$app->getModule('users')->identityClass !== null) {
                 $this->identityClass = Yii::$app->getModule('users')->identityClass;
             } else {
                 $this->identityClass = 'common\model\Identity';

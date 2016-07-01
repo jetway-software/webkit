@@ -15,10 +15,9 @@ class SetupController extends Controller
      */
     private $cache;
     /**
-     * @var array
+     * @var \backend\modules\kernel\requirements\RequirementChecker
      */
-    private $steps = [
-    ];
+    protected $requirementsChecker;
 
     /**
      * @inheritdoc
@@ -28,6 +27,8 @@ class SetupController extends Controller
         parent::init();
 
         $this->cache = Yii::$app->getCache();
+
+        $this->requirementsChecker = new RequirementChecker();
     }
 
     /**
@@ -41,12 +42,12 @@ class SetupController extends Controller
                 'rules' => [
                     [
                         'allow' => true,
-                        'matchCallback' => function ($rule, $action) {
+                        'matchCallback' => function () {
                             return !Yii::$app->isInstalled();
                         }
                     ],
                 ],
-                'denyCallback' => function ($rule, $action) {
+                'denyCallback' => function () {
                     throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
                 }
             ],
@@ -101,9 +102,7 @@ class SetupController extends Controller
      */
     protected function requirements()
     {
-        $requirementsChecker = new RequirementChecker();
-
-        $requirementsChecker->checkYii()->check($this->getRequirements())->render();
+        return $this->requirementsChecker->checkYii()->check($this->getRequirements())->render(true);
     }
 
     /**
@@ -111,6 +110,8 @@ class SetupController extends Controller
      */
     protected function getRequirements() : array
     {
-        return [];
+        $requirementsChecker = $this->requirementsChecker;
+
+        return require(dirname(__DIR__) . DIRECTORY_SEPARATOR . 'requirements' . DIRECTORY_SEPARATOR . 'requirements.php');
     }
 }
