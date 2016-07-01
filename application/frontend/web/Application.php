@@ -28,7 +28,7 @@ class Application extends \common\web\Application
             $config['modules']['gii'] = 'yii\gii\Module';
         }
 
-        if ($main_local = $this->getKernelConfigFile('app', 'frontend')) {
+        if ($main_local = $this->getKernelConfigFile('web', 'frontend')) {
             $config = ArrayHelper::merge($config, $main_local);
         }
 
