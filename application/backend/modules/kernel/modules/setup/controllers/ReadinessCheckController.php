@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\modules\kernel\controllers;
+namespace backend\modules\kernel\modules\setup\controllers;
 
 use yii;
 use common\web\Controller;
@@ -72,37 +72,19 @@ class SetupController extends Controller
             }
         }
     }
-
-    /**
-     * @inheritdoc
-     */
-    protected function step()
-    {
-        return $this->cache->get('step');
-    }
-
-    /**
-     * @return yii\web\Response
-     */
-    protected function next()
-    {
-        return $this->redirect('/');
-    }
-
-    /**
-     * @return yii\web\Response
-     */
-    protected function prev()
-    {
-        return $this->redirect('/');
-    }
-
+    
     /**
      * @inheritdoc
      */
     protected function requirements()
     {
-        return $this->requirementsChecker->checkYii()->check($this->getRequirements())->render(true);
+        $require = $this->requirementsChecker->checkYii()->check($this->getRequirements());
+
+        if (isset($require->result['summary']['errors']) && (int)$require->result['summary']['errors'] === 0) {
+            $this->cache->set('setup', ['step' => 'requirements', 'allow' => true]);
+        }
+
+        return $require->render(true);
     }
 
     /**
