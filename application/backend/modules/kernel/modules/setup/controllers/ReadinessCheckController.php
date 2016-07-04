@@ -26,33 +26,9 @@ class SetupController extends Controller
     {
         parent::init();
 
-        $this->cache = Yii::$app->getCache();
-
         $this->requirementsChecker = new RequirementChecker();
     }
 
-    /**
-     * @return array
-     */
-    public function behaviors()
-    {
-        return [
-            'access' => [
-                'class' => AccessControl::className(),
-                'rules' => [
-                    [
-                        'allow' => true,
-                        'matchCallback' => function () {
-                            return !Yii::$app->isInstalled();
-                        }
-                    ],
-                ],
-                'denyCallback' => function () {
-                    throw new NotFoundHttpException(Yii::t('yii', 'Page not found.'));
-                }
-            ],
-        ];
-    }
 
     /**
      * @inheritdoc
@@ -60,17 +36,6 @@ class SetupController extends Controller
     public function actionIndex()
     {
         $step = Yii::$app->request->get('step', false);
-
-        if ($step === 'next') {
-            return $this->next();
-        } elseif ($step === 'prev') {
-            return $this->prev();
-        } else {
-            switch ($this->step()) {
-                default:
-                    return $this->requirements();
-            }
-        }
     }
     
     /**

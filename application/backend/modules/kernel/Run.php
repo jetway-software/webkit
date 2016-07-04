@@ -4,7 +4,7 @@ namespace backend\modules\kernel;
 
 use yii;
 use common\base\Module;
-use yii\base\Application;
+use common\web\Application;
 use yii\base\BootstrapInterface;
 
 class Run extends Module implements BootstrapInterface
@@ -15,7 +15,11 @@ class Run extends Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
+        if (!$app->isInstalled()) {
+            $app->getUrlManager()->addRules([
 
+            ]);
+        }
     }
 
     /**
