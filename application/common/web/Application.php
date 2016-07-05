@@ -31,9 +31,6 @@ abstract class Application extends \yii\web\Application
     protected function initKernel(array &$config)
     {
         $this->_kernel = new Kernel($this, $config);
-
-        var_dump($this->kernel()->installed());
-        die();
     }
 
     /**

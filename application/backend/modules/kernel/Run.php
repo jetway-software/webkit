@@ -15,11 +15,6 @@ class Run extends Module implements BootstrapInterface
      */
     public function bootstrap($app)
     {
-        if (!$app->isInstalled()) {
-            $app->getUrlManager()->addRules([
-
-            ]);
-        }
     }
 
     /**

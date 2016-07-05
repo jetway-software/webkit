@@ -27,6 +27,8 @@ class Kernel
         $this->app = $application;
 
         $this->preInit($config);
+
+        $this->registerModules($config);
     }
 
     /**
@@ -38,6 +40,10 @@ class Kernel
     {
         if (!isset($config['basePath']) || !is_dir($config['basePath'])) {
             throw new InvalidConfigException('The "basePath" configuration for the Application is required.');
+        }
+
+        if (!isset($config['runtimePath'])) {
+            $this->app->setRuntimePath($config['basePath'] . '/runtime');
         }
 
         if (file_exists(Yii::getAlias('@common') . '/config/configuration.php') && file_exists($config['basePath'] . '/config/configuration.php')) {
@@ -76,6 +82,54 @@ class Kernel
         if (isset($config['modules']) && array_key_exists('kernel', $config['modules'])) {
             throw new InvalidConfigException(__('kernel', 'Module name "kernel" is reserved by the system and can not be used.'));
         }
+
+        if (!isset($config['bootstrap'])) {
+            $config['bootstrap'] = ['kernel'];
+        } else {
+            if (!is_array($config['bootstrap'])) {
+                $config['bootstrap'] = (array)$config['bootstrap'];
+            }
+
+            $config['bootstrap'] = ArrayHelper::merge(['kernel'], $config['bootstrap']);
+        }
+
+        $config['modules']['kernel'] = [
+            'class' => $this->installed() ? 'frontend\modules\kernel\Run' : 'backend\modules\kernel\Run'
+        ];
+    }
+
+    /**
+     * @param array $config
+     */
+    protected function registerModules(array &$config)
+    {
+        if (isset($config['modules'])) {
+            $modulesCache = $this->app->getRuntimePath() . '/kernel/modules.php';
+
+            if (file_exists($modulesCache) && ($modules = require_once($this->app->getRuntimePath() . '/kernel/modules.php'))) {
+                if (isset($modules['events'])) {
+                    $this->registerEvents($modules['events']);
+                }
+            } else {
+                $events = [];
+                foreach ($config['modules'] as $id => $module) {
+                    if (!isset($module['active']) || $module['active'] === true) {
+                        $this->app->setModule($id, $module);
+                        if ($this->app->hasModule($id)) {
+                            //TODO сделать добавлени евентов
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function registerEvents(array $handlers)
+    {
+
     }
 
     /**

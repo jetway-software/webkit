@@ -21,7 +21,7 @@ class Run extends Module
                     [
                         'allow' => true,
                         'matchCallback' => function () {
-                            return !Yii::$app->isInstalled();
+                            return !Yii::$app->kernel()->installed();
                         }
                     ],
                 ],
@@ -31,7 +31,7 @@ class Run extends Module
             ],
         ];
     }
-    
+
     /**
      * @return mixed
      */
