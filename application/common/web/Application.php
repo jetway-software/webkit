@@ -21,8 +21,6 @@ abstract class Application extends \yii\web\Application
     public function preInit(&$config)
     {
         $this->initKernel($config);
-
-        parent::preInit($config);
     }
 
     /**

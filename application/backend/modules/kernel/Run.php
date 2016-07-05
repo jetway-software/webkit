@@ -10,6 +10,20 @@ use yii\base\BootstrapInterface;
 class Run extends Module implements BootstrapInterface
 {
     /**
+     * @inheritdoc
+     */
+    public function init()
+    {
+        parent::init();
+
+        $this->setModules([
+            'setup' => [
+                'class' => 'backend\modules\kernel\modules\setup\Run'
+            ]
+        ]);
+    }
+
+    /**
      * Bootstrap method to be called during application bootstrap stage.
      * @param Application $app the application currently running
      */

@@ -25,6 +25,8 @@ defined('APP_PATH') or define('APP_PATH', __DIR__);
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_ENV') or define('YII_ENV', 'dev');
 
+defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
+
 require(__DIR__ . '/functions.php');
 
 $vendorRoot = dirname(__DIR__) . '/vendor';
