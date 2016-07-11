@@ -21,3 +21,4 @@ node_modules
 backend/web/index-dev.php
 accounts/web/index-dev.php
 frontend/web/index-dev.php
+tests/_output/*

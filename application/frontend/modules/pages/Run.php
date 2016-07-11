@@ -37,4 +37,9 @@ class Run extends Module
     {
         return '';
     }
+
+    public function registerUrlRules()
+    {
+        return [];
+    }
 }

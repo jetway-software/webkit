@@ -45,7 +45,7 @@ class Run extends Module
      */
     public function getName()
     {
-        // TODO: Implement getName() method.
+        return 'Kernel Setup';
     }
 
     /**
@@ -61,6 +61,16 @@ class Run extends Module
      */
     public function getDescription()
     {
-        // TODO: Implement getDescription() method.
+        return 'WebKit Kernel installer.';
+    }
+
+    /**
+     * @return array
+     */
+    public function registerUrlRules()
+    {
+        return [
+            'setup' => 'kernel/setup/default/index'
+        ];
     }
 }

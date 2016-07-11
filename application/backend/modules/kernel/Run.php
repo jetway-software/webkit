@@ -7,7 +7,7 @@ use common\base\Module;
 use common\web\Application;
 use yii\base\BootstrapInterface;
 
-class Run extends Module implements BootstrapInterface
+class Run extends Module
 {
     /**
      * @inheritdoc
@@ -21,14 +21,6 @@ class Run extends Module implements BootstrapInterface
                 'class' => 'backend\modules\kernel\modules\setup\Run'
             ]
         ]);
-    }
-
-    /**
-     * Bootstrap method to be called during application bootstrap stage.
-     * @param Application $app the application currently running
-     */
-    public function bootstrap($app)
-    {
     }
 
     /**
@@ -59,5 +51,15 @@ class Run extends Module implements BootstrapInterface
     public function getDescription()
     {
         return '';
+    }
+
+    /**
+     * @return array
+     */
+    public function registerUrlRules()
+    {
+        return [
+            '/' => 'kernel/default/index'
+        ];
     }
 }

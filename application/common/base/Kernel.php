@@ -56,26 +56,27 @@ class Kernel
         }
 
         if (file_exists(Yii::getAlias('@common') . '/config/configuration.php') && file_exists($this->app->getBasePath() . '/config/configuration.php')) {
-            $this->initialized = true;
+            $this->installed = true;
+
             $config = ArrayHelper::merge(
                 require_once(Yii::getAlias('@common') . '/config/configuration.php'),
                 require_once($config['basePath'] . '/config/configuration.php'),
                 $config
             );
-        }
 
-        if (file_exists(Yii::getAlias('@common') . '/config/configuration-local.php')) {
-            $config = ArrayHelper::merge(
-                require_once(Yii::getAlias('@common') . '/config/configuration-local.php'),
-                $config
-            );
-        }
+            if (file_exists(Yii::getAlias('@common') . '/config/configuration-local.php')) {
+                $config = ArrayHelper::merge(
+                    require_once(Yii::getAlias('@common') . '/config/configuration-local.php'),
+                    $config
+                );
+            }
 
-        if (file_exists($this->app->getBasePath() . '/config/configuration-local.php')) {
-            $config = ArrayHelper::merge(
-                require_once($this->app->getBasePath() . '/config/configuration-local.php'),
-                $config
-            );
+            if (file_exists($this->app->getBasePath() . '/config/configuration-local.php')) {
+                $config = ArrayHelper::merge(
+                    require_once($this->app->getBasePath() . '/config/configuration-local.php'),
+                    $config
+                );
+            }
         }
 
         if (!isset($config['vendorPath'])) {
@@ -111,6 +112,7 @@ class Kernel
         }
 
         $this->registerErrorHandler($config);
+        $this->registerDependencyComponents($config);
 
         if (isset($config['components'])) {
             $this->app->setComponents($config['components']);
@@ -129,7 +131,7 @@ class Kernel
                 $this->processModules($config['modules'], $data);
             }
 
-            if ($data['bootstrap']) {
+            if (array_key_exists('bootstrap', $data) && $data['bootstrap']) {
                 if (isset($config['bootstrap'])) {
                     $config['bootstrap'] = ArrayHelper::merge($data['bootstrap'], $config['bootstrap']);
                 } else {
@@ -139,6 +141,10 @@ class Kernel
 
             if (isset($data['events'])) {
                 $this->registerEvents($data['events']);
+            }
+
+            if (isset($data['urlRules'])) {
+                $this->registerUrlRules($data['urlRules']);
             }
         }
     }
@@ -165,6 +171,10 @@ class Kernel
                         $data['events'][] = $this->app->getModule($id)->attachEvents();
                     }
 
+                    if ($reflection->hasMethod('registerUrlRules') && ($rules = $this->app->getModule($id)->registerUrlRules()) && is_array($rules)) {
+                        $data['urlRules'][] = $rules;
+                    }
+
                     if ($sub_modules = $this->app->getModule($id)->getModules()) {
                         $this->processModules($sub_modules, $data, $uniqueId);
                     }
@@ -188,6 +198,31 @@ class Kernel
                 }
             }
         }
+    }
+
+    /**
+     * @param array $rules
+     * @return array
+     */
+    protected function registerUrlRules(array $rules)
+    {
+        foreach ($rules as $groupRules) {
+            $this->app->getUrlManager()->addRules($groupRules, false);
+        }
+    }
+
+    /**
+     * @param $config
+     * @throws InvalidConfigException
+     */
+    protected function registerDependencyComponents(&$config)
+    {
+        if (!isset($config['components']['cache']['class'])) {
+            echo "Error: no cache component is configured.\n";
+            exit(1);
+        }
+        $this->app->set('cache', $config['components']['cache']);
+        unset($config['components']['cache']);
     }
 
     /**
